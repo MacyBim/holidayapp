@@ -1,9 +1,10 @@
 .app {
   text-align: center;
   font-family: Verdana;
-}
+  width: 100%;
+   }
 
-body{ margin: 0; padding: 0; background: #fafafa; }
+ body {background: #fafafa;}
 
 @keyframes App-logo-spin {
   from { transform: rotate(0deg); }

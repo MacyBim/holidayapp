@@ -1,20 +1,36 @@
 import * as React from 'react';
 import { Dropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap';
+import { Row, Col } from 'reactstrap';
 
 import './main.css';
 import AddButton from './button';
 import Overview from './overview';
 
-class Main extends React.Component < MyProps, MyState> {
-    constructor(props: MyProps) {
-        super(props);
+class Main extends React.Component <IProps, IState> {
+    constructor() {
+        super();
         this.toggle = this.toggle.bind(this);
         this.state = {
           dropdownOpen: false,
-          employees: ['Macy Sharoubim', 'Victor Pantaleev', 'Mehdi Ebadi', 'Tessa van Alphen'],
+          medewerkers: [],
+          names: [],
           activeEm: '',
-          isSelected: false
+          activeId: 0,
+          isSelected: false,
         };
+      }
+
+      componentDidMount() {
+        const url = 'http://localhost:9000/api/vakantie';
+        fetch(url)
+          .then(response => response.json())
+          .then((json) => {
+            this.setState({
+              medewerkers: json
+            });    
+          })
+          // tslint:disable-next-line:no-console
+          .catch( error => console.log('Error Fetch : ' + error ));      
       }
     
       // Toggle for the dropdown
@@ -25,55 +41,71 @@ class Main extends React.Component < MyProps, MyState> {
       }
 
       // When an employee is selected 
-      person(name: string) {
+      person(name: string, id: number) {
             this.setState({
                 activeEm: name,
+                activeId: id,
                 isSelected: true
             });
       }
     
       render() {  
-          let name = this.state.activeEm;
+        let name = this.state.activeEm;
+        let arr = this.state.medewerkers.find( item => item.id === this.state.activeId );
 
           // Puts all the employees in the list
-          let rows: Array<DropdownItem> = []; 
-          for (let i = 0; i < this.state.employees.length; i++) {
-              // tslint:disable-next-line:jsx-wrap-multiline
-              rows.push(<DropdownItem key={i} onClick={() => this.person(this.state.employees[i])}> 
-                  {this.state.employees[i]}</DropdownItem>);
+        let rows: Array<DropdownItem> = []; 
+        for (let i = 0; i < this.state.medewerkers.length; i++) {
+                let naam = this.state.medewerkers[i].naam;
+                let id = this.state.medewerkers[i].id;
+                // tslint:disable-next-line:jsx-wrap-multiline
+                rows.push(<DropdownItem key={i} onClick={() => this.person(naam, id)}> 
+                  {this.state.medewerkers[i].naam}</DropdownItem>);
           }
 
-          return ( 
+        return ( 
             <div className="main">
-                <Dropdown className="dropdown" isOpen={this.state.dropdownOpen} toggle={this.toggle}>
-                    <DropdownToggle caret={true}>
-                   Selecteer medewerker...
-                     </DropdownToggle>
-                    <DropdownMenu className="menu">
-                    {rows}
-                    </DropdownMenu>
-                </Dropdown>
-                {(this.state.isSelected) ? <AddButton> {name}</AddButton> : null}     
-                {(this.state.isSelected) ? <Overview /> : null}          
+                <Row className="dropdown">
+                    <Col lg="6" sm="6" xs="12">
+                        <Dropdown isOpen={this.state.dropdownOpen} toggle={this.toggle}>
+                            <DropdownToggle caret={true}>
+                            Selecteer medewerker...
+                            </DropdownToggle>
+                            <DropdownMenu className="menu">
+                                {rows}
+                            </DropdownMenu>
+                        </Dropdown>
+                    </Col>
+                </Row> 
+                {(this.state.isSelected) ? <AddButton>{name}</AddButton> : null}
+                {(this.state.isSelected) ? <Overview data={array}/> : null}
             </div>
     
         );
     }
 }
 
-interface Employ {
-    [index:  number]: string;
-    length: number;
+// tslint:disable-next-line:interface-name
+interface IProps {
 }
 
-interface MyProps {
-} 
-
-interface MyState {
+// tslint:disable-next-line:interface-name
+interface IState {
     dropdownOpen: boolean;
     activeEm: string;
-    employees: Employ;
+    activeId: number;
+    medewerkers: IMedewerker[];
+    names: string[];
     isSelected: boolean;
+ 
 }
+  // tslint:disable-next-line:interface-name
+interface IMedewerker {
+    id: number;
+    naam: string;
+    inDienstDatum: Date;
+    uitDienstDatum: Date;
+    vakantieDagen: number;
+  }
 
 export default Main;

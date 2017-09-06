@@ -23,18 +23,21 @@ class AddButton extends React.Component<MyProps, MyState> {
 
     render() {
           let children =  this.props.children;
+          
           return (
-  
             <div>
                 <Row className="buttonRow">
-                    <Col xs="6" className="selected"><h2>{children}</h2></Col>
-                    <Col xs="6">
-                        <Button color="info" className="button" onClick={() => this.changeStatus()}> 
-                             {(this.state.willAdd) ? <TiMinus/> : <TiPlus />} Voeg vakantiedagen toe 
+                    <Col sm="6" xs="12"><h2>{children}</h2></Col>
+                    <Col sm="6" xs="12" className="button">
+                        <Button color="secondary" onClick={() => this.changeStatus()}> 
+                            {(this.state.willAdd) ? '' : 'Voeg vakantiedagen toe '}
+                            {(this.state.willAdd) ? <TiMinus/> : <TiPlus />} 
+                             
                         </Button>
                     </Col>
                 </Row>
                 {(this.state.willAdd) ? <AddDay /> : <div />}  
+               
             </div>    
         );
     }

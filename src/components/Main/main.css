@@ -1,41 +1,43 @@
 .main { 
-    padding: 50px 15%;
+    font-family: Verdana, Geneva, Tahoma, sans-serif; 
 }
-
 .dropdown {
     text-align: left;
-    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    padding: 30px 15%;
 }
-
+.menu {
+    margin: -30px 15%;
+}
 .buttonRow {
-    margin: 40px 0;
-}
-.selected {
-    text-align: left;
-}
-.button {
-    text-align: right;
+    padding: 30px 15%; 
+    border-bottom: thin solid;
+    border-color: lightgrey;
 }
 
+.button {
+    text-align:right;
+}
+
+.addRow {
+    padding: 30px 15%;  
+    border-bottom: thin solid;
+    border-color: lightgrey;
+}
 .infoRow {
-    padding: 20px 0;
+    padding: 60px 15% 30px 15%;
     margin: 0 auto;
-    font-size:0.90em;
-    width: 80%;
+    font-size:1em;
+    width:80%;
+    text-align:left;
 }
 
 .year {
     color:#67BDD0;
-    text-align:right;
 }
 
 .table {
-    text-align: left;
+    text-align:left;
     margin: 0 auto;
-    font-size: 0.90em;
-    width: 60%;
-}
-
-.form {
-    padding: 50px 0;
+    font-size: 0.95em;
+    width:100%
 }
