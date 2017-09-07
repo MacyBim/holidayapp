@@ -21,17 +21,60 @@ class Main extends React.Component <IProps, IState> {
       }
 
       componentDidMount() {
+       // tslint:disable-next-line:no-console
+        console.log('we are in component willmount');
         const url = 'http://localhost:9000/api/vakantie';
-        fetch(url)
-          .then(response => response.json())
-          .then((json) => {
+        // fetch(url)
+        //   .then(response => response.json())
+        //   .then((json) => {
+        //       // tslint:disable-next-line:no-console
+        //       console.log(json);
+        //       this.setState({
+        //       medewerkers: json
+        //     });    
+        //   })
+        //   // tslint:disable-next-line:no-console
+        //   .catch( error => console.log('Error Fetch : ' + error ));    
+
+        fetch(url, {
+            method: 'GET',
+            })
+            .then(res => res.json())
+            .then((json) => {
+            // tslint:disable-next-line:no-console
+            console.log(json);
             this.setState({
-              medewerkers: json
-            });    
-          })
-          // tslint:disable-next-line:no-console
-          .catch( error => console.log('Error Fetch : ' + error ));      
-      }
+                    medewerkers: json
+                });   
+            });
+        }
+
+    //   addCountry() {
+    //     // tslint:disable-next-line:no-console
+    //     let newdata = {
+    //          naam : 'Test Naam',
+    //          id : '023',
+    //          inDienstDatum : '2017/01/02',
+    //          uitDienstDatum : '2016/02/04',
+    //          vakantieDagen : '25'
+
+    //     };
+    
+    //     var request = new Request('http://localhost:3000/api/addtest', {
+    //       method: 'POST',
+    //       headers: new  Headers({'Content-Type': 'application/json'}),
+    //       body: JSON.stringify(newdata)
+    //     });
+    
+    //     // xmlHttpRequest()
+    //     fetch(request)
+    //       .then(function(res: Response){
+    //         res.json()
+    //           // tslint:disable-next-line:no-empty
+    //           .then(function(data: {}){
+    //             });
+    //           });
+    //   }
     
       // Toggle for the dropdown
       toggle() {
@@ -51,7 +94,9 @@ class Main extends React.Component <IProps, IState> {
     
       render() {  
         let name = this.state.activeEm;
-        let arr = this.state.medewerkers.find( item => item.id === this.state.activeId );
+       //  let activeDat: IMedewerker = this.state.medewerkers.find( item => item.id === this.state.activeId );
+        // tslint:disable-next-line:no-console
+       //  var test = this.state.medewerkers.indexOf(, this.state.activeId);
 
           // Puts all the employees in the list
         let rows: Array<DropdownItem> = []; 
@@ -78,7 +123,7 @@ class Main extends React.Component <IProps, IState> {
                     </Col>
                 </Row> 
                 {(this.state.isSelected) ? <AddButton>{name}</AddButton> : null}
-                {(this.state.isSelected) ? <Overview data={array}/> : null}
+                {(this.state.isSelected) ? <Overview /> : null}
             </div>
     
         );
@@ -106,6 +151,7 @@ interface IMedewerker {
     inDienstDatum: Date;
     uitDienstDatum: Date;
     vakantieDagen: number;
+    indexOf(index: number);
   }
 
 export default Main;

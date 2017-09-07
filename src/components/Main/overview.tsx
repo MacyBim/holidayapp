@@ -6,11 +6,11 @@ import TiEdit from 'react-icons/lib/ti/edit';
 import TiTrash from 'react-icons/lib/ti/trash';
 
 class Overview extends React.Component<IProps, MyState> {
-    constructor() {
-        super();
+    constructor(props: IProps) {
+        super(props);
         this.state = {
             total: 25,
-            used: 29
+            used: 29,
         };
     }
 
@@ -67,18 +67,8 @@ class Overview extends React.Component<IProps, MyState> {
 }
 // tslint:disable-next-line:interface-name
 interface IProps {
-    array: IMedewerker[];
+
 }
-
-// tslint:disable-next-line:interface-name
-interface IMedewerker {
-    id: number;
-    naam: string;
-    inDienstDatum: Date;
-    uitDienstDatum: Date;
-    vakantieDagen: number;
-  }
-
 interface MyState {
     total: number;
     used: number;
