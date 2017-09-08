@@ -20,33 +20,8 @@ class Main extends React.Component <IProps, IState> {
         };
       }
 
-      componentDidMount() {
-       // tslint:disable-next-line:no-console
-        console.log('we are in component willmount');
-        const url = 'http://localhost:9000/api/vakantie';
-        // fetch(url)
-        //   .then(response => response.json())
-        //   .then((json) => {
-        //       // tslint:disable-next-line:no-console
-        //       console.log(json);
-        //       this.setState({
-        //       medewerkers: json
-        //     });    
-        //   })
-        //   // tslint:disable-next-line:no-console
-        //   .catch( error => console.log('Error Fetch : ' + error ));    
-
-        fetch(url, {
-            method: 'GET',
-            })
-            .then(res => res.json())
-            .then((json) => {
-            // tslint:disable-next-line:no-console
-            console.log(json);
-            this.setState({
-                    medewerkers: json
-                });   
-            });
+        componentDidMount() {
+            this.fetchData();
         }
 
     //   addCountry() {
@@ -76,29 +51,21 @@ class Main extends React.Component <IProps, IState> {
     //           });
     //   }
     
-      // Toggle for the dropdown
-      toggle() {
-          this.setState({
-          dropdownOpen: !this.state.dropdownOpen
-        });
-      }
-
-      // When an employee is selected 
-      person(name: string, id: number) {
-            this.setState({
-                activeEm: name,
-                activeId: id,
-                isSelected: true
-            });
-      }
-    
-      render() {  
+    render() {  
         let name = this.state.activeEm;
-       //  let activeDat: IMedewerker = this.state.medewerkers.find( item => item.id === this.state.activeId );
-        // tslint:disable-next-line:no-console
-       //  var test = this.state.medewerkers.indexOf(, this.state.activeId);
 
-          // Puts all the employees in the list
+        let inDienst = '';
+        let uitDienst = '';
+        let vakDagen = 0;
+        if (this.state.activeId !== 0) {
+        let activeDat: IMedewerker = this.state.medewerkers.filter(item => item.id === this.state.activeId )[0];
+         // tslint:disable-next-line:no-console
+        inDienst = activeDat.inDienstDatum;
+        uitDienst = activeDat.uitDienstDatum;
+        vakDagen = activeDat.vakantieDagen;
+        }
+
+        // Puts all the employees in the list
         let rows: Array<DropdownItem> = []; 
         for (let i = 0; i < this.state.medewerkers.length; i++) {
                 let naam = this.state.medewerkers[i].naam;
@@ -123,10 +90,46 @@ class Main extends React.Component <IProps, IState> {
                     </Col>
                 </Row> 
                 {(this.state.isSelected) ? <AddButton>{name}</AddButton> : null}
-                {(this.state.isSelected) ? <Overview /> : null}
+                {(this.state.isSelected) ? <Overview 
+                    inDienst={inDienst} 
+                    uitDienst={uitDienst} 
+                    vakDagen={vakDagen} 
+                    activeId={this.state.activeId}
+                /> 
+                : null}
             </div>
     
         );
+    }
+
+    private fetchData() {
+        const url = 'http://localhost:9000/api/medewerker';
+        fetch(url, {
+            method: 'GET',
+            })
+            .then(res => res.json())
+            .then((json) => {
+            this.setState({
+                    medewerkers: json
+                });   
+            })// tslint:disable-next-line:no-console
+            .catch( error => console.log('Error Fetch : ' + error )); 
+    }
+
+    // Toggle for the dropdown
+    private toggle() {
+        this.setState({
+        dropdownOpen: !this.state.dropdownOpen
+        });
+    }
+  
+    // When an employee is selected 
+    private person(name: string, id: number) {
+        this.setState({
+            activeEm: name,
+            activeId: id,
+            isSelected: true
+        });
     }
 }
 
@@ -148,10 +151,9 @@ interface IState {
 interface IMedewerker {
     id: number;
     naam: string;
-    inDienstDatum: Date;
-    uitDienstDatum: Date;
+    inDienstDatum: string;
+    uitDienstDatum: string;
     vakantieDagen: number;
-    indexOf(index: number);
-  }
+}
 
 export default Main;
