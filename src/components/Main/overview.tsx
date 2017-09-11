@@ -15,6 +15,7 @@ interface IProps {
 }
 interface MyState {
     dagen: IDagen[];
+    id: number;
 }
 
 // tslint:disable-next-line:interface-name
@@ -26,29 +27,21 @@ interface IDagen {
 }
 
 class Overview extends React.Component<IProps, MyState> {
+
     constructor(props: IProps) {
         super(props);
         this.state = {
-            dagen: []
+            dagen: [],
+            id: 0,
         };
     }
 
     componentDidMount() {
-        const url = 'http://localhost:9000/api/vakantiedagen';
-
-        fetch(url, {
-            method: 'GET',
-            })
-            .then(res => res.json())
-            .then((json) => {
-            this.setState({
-                    dagen: json
-                });   
-            })// tslint:disable-next-line:no-console
-            .catch( error => console.log('Error Fetch : ' + error )); 
-        }
+       this.fetchData(); 
+    }
 
     render() {
+
         var styles = {
             color: '#FF3C3C'
         };
@@ -63,8 +56,9 @@ class Overview extends React.Component<IProps, MyState> {
         let dagen = this.state.dagen.filter(item => item.medewerkerId === this.props.activeId );
 
         // Create a table for every year
-        let rows: Array<Row> = [];
+        let rows: Array<JSX.Element> = [];
         for ( var i = 0; i < jaarVerschil + 1; i++) {
+
             let thisyear = uitDienst - i;
             let usedDays = 0;
 
@@ -76,13 +70,16 @@ class Overview extends React.Component<IProps, MyState> {
 
                     let workingdays = this.countWorkindays(new Date(dagen[j].startDatum), new Date(dagen[j].eindDatum));
                     usedDays = usedDays + workingdays;
+                    // tslint:disable-next-line:no-console
+                    let ide = dagen[j].id;
                     days.push( 
                     // tslint:disable-next-line:jsx-wrap-multiline
                     <tr>   
                           <td>{new Date(dagen[j].startDatum).toLocaleDateString()}</td>
                           <td>{new Date(dagen[j].eindDatum).toLocaleDateString()}</td>
                           <td>{workingdays}</td>
-                          <td> <TiEdit size={28} /><TiTrash size={28} /></td>
+                          <td> <TiEdit size={28} />
+                            <a onClick={() => this.delete(ide)}> <TiTrash size={28} /> </a> </td>
                       </tr>
                     );
                 }
@@ -96,7 +93,7 @@ class Overview extends React.Component<IProps, MyState> {
             <Col xs="12" sm="3"><h4 className="year">{thisyear}</h4></Col>
             <Col xs="12" sm="3">Aantal vakantiedagen:  
                             <strong>{this.props.vakDagen}</strong></Col>
-            <Col xs="12" sm="3">Gebruikte dagen: {usedDays2} </Col>
+            <Col xs="12" sm="3">Gebruikte dagen: {usedDays2}</Col>
             <Col xs="12" sm="9">
                 <Table striped={true} className="table" reponsive={true}>
                     <thead>
@@ -118,11 +115,24 @@ class Overview extends React.Component<IProps, MyState> {
         return (
         <div>
             {rows}
-        </div> 
-            
+        </div>    
         );
     }
-
+    
+    private fetchData() {
+        const url = 'http://localhost:9000/api/vakantiedagen';
+        
+        fetch(url, {
+            method: 'GET',
+            })
+            .then(res => res.json())
+            .then((json) => {
+            this.setState({
+                dagen: json
+            });   
+        })// tslint:disable-next-line:no-console
+        .catch( error => console.log('Error Fetch : ' + error ));
+    }
     // Count the workingdays in the holiday period
     private countWorkindays(begin: Date, eind: Date) {
 
@@ -141,6 +151,20 @@ class Overview extends React.Component<IProps, MyState> {
             }
         }
         return workingdays;
+    }
+
+    private delete(id: number) {
+        const url = 'http://localhost:9000/api/delete/' + id;
+        fetch(url, {
+            method: 'DELETE',
+            })
+            .then(res => res.json())
+            .then((json) => {
+            this.setState({
+                dagen: json
+            });   
+            })// tslint:disable-next-line:no-console
+            .catch( error => console.log('Error Fetch : ' + error )); 
     }
 }
 

@@ -6,6 +6,30 @@ import './main.css';
 import AddButton from './button';
 import Overview from './overview';
 
+// tslint:disable-next-line:interface-name
+interface IProps {
+}
+
+// tslint:disable-next-line:interface-name
+interface IState {
+    dropdownOpen: boolean;
+    activeEm: string;
+    activeId: number;
+    medewerkers: IMedewerker[];
+    names: string[];
+    isSelected: boolean;
+    uniqueId: number;
+ 
+}
+  // tslint:disable-next-line:interface-name
+interface IMedewerker {
+    id: number;
+    naam: string;
+    inDienstDatum: string;
+    uitDienstDatum: string;
+    vakantieDagen: number;
+}
+
 class Main extends React.Component <IProps, IState> {
     constructor() {
         super();
@@ -17,39 +41,13 @@ class Main extends React.Component <IProps, IState> {
           activeEm: '',
           activeId: 0,
           isSelected: false,
+          uniqueId: 0
         };
       }
 
-        componentDidMount() {
-            this.fetchData();
-        }
-
-    //   addCountry() {
-    //     // tslint:disable-next-line:no-console
-    //     let newdata = {
-    //          naam : 'Test Naam',
-    //          id : '023',
-    //          inDienstDatum : '2017/01/02',
-    //          uitDienstDatum : '2016/02/04',
-    //          vakantieDagen : '25'
-
-    //     };
-    
-    //     var request = new Request('http://localhost:3000/api/addtest', {
-    //       method: 'POST',
-    //       headers: new  Headers({'Content-Type': 'application/json'}),
-    //       body: JSON.stringify(newdata)
-    //     });
-    
-    //     // xmlHttpRequest()
-    //     fetch(request)
-    //       .then(function(res: Response){
-    //         res.json()
-    //           // tslint:disable-next-line:no-empty
-    //           .then(function(data: {}){
-    //             });
-    //           });
-    //   }
+    componentDidMount() {
+        this.fetchData();
+    }
     
     render() {  
         let name = this.state.activeEm;
@@ -89,7 +87,11 @@ class Main extends React.Component <IProps, IState> {
                         </Dropdown>
                     </Col>
                 </Row> 
-                {(this.state.isSelected) ? <AddButton>{name}</AddButton> : null}
+                {(this.state.isSelected) ? <AddButton 
+                    name={name} 
+                    activeId={this.state.activeId}
+                /> : null}
+
                 {(this.state.isSelected) ? <Overview 
                     inDienst={inDienst} 
                     uitDienst={uitDienst} 
@@ -131,29 +133,6 @@ class Main extends React.Component <IProps, IState> {
             isSelected: true
         });
     }
-}
-
-// tslint:disable-next-line:interface-name
-interface IProps {
-}
-
-// tslint:disable-next-line:interface-name
-interface IState {
-    dropdownOpen: boolean;
-    activeEm: string;
-    activeId: number;
-    medewerkers: IMedewerker[];
-    names: string[];
-    isSelected: boolean;
- 
-}
-  // tslint:disable-next-line:interface-name
-interface IMedewerker {
-    id: number;
-    naam: string;
-    inDienstDatum: string;
-    uitDienstDatum: string;
-    vakantieDagen: number;
 }
 
 export default Main;

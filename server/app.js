@@ -2,6 +2,9 @@ const express = require('express');
 const path = require('path');
 const app = express();
 const bodyparser = require('body-parser');
+
+app.use(bodyparser.json());
+app.use(bodyparser.urlencoded({ extended: true }));
  
 // Serve static assets
 app.use(express.static(path.resolve(__dirname, '..', 'build')));
@@ -15,41 +18,49 @@ app.get('/', (req, res) => {
 const knex = require('knex')(require('../knexfile'))
 
 app.get('/api/medewerker', function(req, res){
-  knex.raw('select * from medewerker').then(function(data) {
-    return res.send(data.rows)
+  
+  knex.select().from('medewerker')
+  .then(function(data) {
+    return res.send(data);
   })
 });
 
 app.get('/api/vakantiedagen', function(req, res){
-  knex.raw('select * from vakantiedagen').then(function(data) {
-
-    return res.send(data.rows)
+  knex.select().from('vakantiedagen')
+  .then(function(data) {
+    return res.send(data)
   })
 });
 
-// app.post('/api/addtest', function( req, res) {
+app.post('/api/postday', function(req, res) {
 
-//   var naam = request.body.naam;
-//   var id = request.body.id;
-//   var inDienstDatum = request.body.inDienstDatum;
-//   var uitDienstDatum = request.body.uitDienstDatum;
-//   var vakantieDagen = request.body.vakantieDagen
+  let id = req.body.id;
+  let medewerkerId = req.body.medewerkerId;
+  let startDatum = req.body.startDatum;
+  let eindDatum = req.body.eindDatum;
+  console.log(id, medewerkerId, startDatum, eindDatum );
 
-//   let newdata = [naam, id, inDienstDatum, uitDienstDatum, vakantieDagen];
+  knex('vakantiedagen').insert({
+    id: id,
+    medewerkerId: medewerkerId,
+    startDatum: startDatum,
+    eindDatum: eindDatum
+  })
+  .then( function (result) {
+    res.json({ success: true, message: 'ok' }); 
+ })
+});
 
-//   pool.connect((err, db, done) => {
-//   // Call `done(err)` to release the client back to the pool (or destroy it if there is an error)
-//   done();
-//   if(err){
-//       console.error('error open connection', err);
-//       return response.status(400).send({error: err});
-//   }
-//   else {
-//     return knex('medewerker').insert({
-//       naam, id, inDienstDatum, uitDienstDatum, vakantieDagen
-//     });
-//   }
-//   });
-// });
+app.delete('/api/delete/:id', function(req, res) {
+     let id = req.params.id;
+
+     knex('vakantiedagen').where('id', id).del()
+     .then(function() {
+      knex.select().from('vakantiedagen')
+      .then(function(data) {
+        return res.send(data)
+     })
+   })
+});
 
 module.exports = app;

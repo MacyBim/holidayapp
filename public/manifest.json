@@ -1,11 +1,11 @@
 {
   "short_name": "React App",
-  "name": "Create React App Sample",
+  "name": "Vakantiedagen",
   "icons": [
     {
-      "src": "favicon.ico",
+      "src": "pineapple.svg",
       "sizes": "192x192",
-      "type": "image/png"
+      "type": "image/svg"
     }
   ],
   "start_url": "./index.html",
