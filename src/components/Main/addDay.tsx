@@ -8,6 +8,8 @@ import AddButton from './button';
 // tslint:disable-next-line:interface-name
 interface IProps {
       activeId: number;
+      idList: number[];
+      insert(id: number, beginDate: string, endDate: string);
 }
 
 class AddDay extends React.Component<IProps, AddButton> {
@@ -19,7 +21,6 @@ class AddDay extends React.Component<IProps, AddButton> {
           return (      
             <Form className="form">
                  <Row className="addRow">
-                  {/* tslint:disable-next-line:jsx-self-close */}
                         <Col sm="3" xs="0" /> 
                         <Col sm="3" xs="0" /> 
                         <Col sm="3" xs="6">
@@ -31,36 +32,31 @@ class AddDay extends React.Component<IProps, AddButton> {
                               <Input type="date" placeholder="" getRef={(input) => (this.endDate = input)}/>    
                         </Col> 
                         <Col sm="12" className="button">  
-                              <Button color="info" className="button" onClick={() => this.addDays()}> 
+                              <Button color="info" onClick={() => this.addDays()}> 
                                     {<TiPlus />}Voeg toe 
                               </Button>
                         </Col>
                   </Row>
             </Form>                 
-           
             );
       }
 
+      // Creates a unique ID for the holiday period
       private addDays() {
             let a = this.props.activeId.toString();
             let b = Math.floor((Math.random() * 100) + 1).toString();
             let c = a + b;
             let id = Number(c);
-
-            let newdata = {
-                  id: id,
-                  medewerkerId: this.props.activeId,
-                  startDatum: this.beginDate.value,
-                  eindDatum: this.endDate.value
-            };
-
-            const url = 'http://localhost:9000/api/postday';
-            fetch(url, {
-                  method: 'POST',
-                  headers: new Headers({'Content-Type': 'application/json'}),
-                  body: JSON.stringify(newdata)
-            });
-        }
+      
+            // When the Id already exists a new one will be created
+            while (!(typeof(this.props.idList.find(item => item === id )) !== undefined)) {
+                   a = this.props.activeId.toString();
+                   b = Math.floor((Math.random() * 100) + 1).toString();
+                   c = a + b;
+                   id = Number(c);
+            }
+            this.props.insert(id, this.beginDate.value, this.endDate.value );
+      }
 }
 
 export default AddDay;

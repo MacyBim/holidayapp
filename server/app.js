@@ -38,7 +38,6 @@ app.post('/api/postday', function(req, res) {
   let medewerkerId = req.body.medewerkerId;
   let startDatum = req.body.startDatum;
   let eindDatum = req.body.eindDatum;
-  console.log(id, medewerkerId, startDatum, eindDatum );
 
   knex('vakantiedagen').insert({
     id: id,
@@ -46,8 +45,11 @@ app.post('/api/postday', function(req, res) {
     startDatum: startDatum,
     eindDatum: eindDatum
   })
-  .then( function (result) {
-    res.json({ success: true, message: 'ok' }); 
+  .then(function() {
+    knex.select().from('vakantiedagen')
+    .then(function(data) {
+      return res.send(data)
+   })
  })
 });
 
@@ -61,6 +63,22 @@ app.delete('/api/delete/:id', function(req, res) {
         return res.send(data)
      })
    })
+});
+
+app.put('/api/update/:id', function(req, res){
+  let startDatum = req.body.startDatum;
+  let eindDatum = req.body.eindDatum;
+
+  knex('vakantiedagen').where('id', req.params.id).update({
+    startDatum: startDatum,
+    eindDatum: eindDatum
+  })
+  .then(function() {
+    knex.select().from('vakantiedagen')
+    .then(function(data) {
+      return res.send(data)
+   })
+ })
 });
 
 module.exports = app;

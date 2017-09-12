@@ -19,7 +19,7 @@ interface IState {
     names: string[];
     isSelected: boolean;
     uniqueId: number;
- 
+    willAdd: boolean;
 }
   // tslint:disable-next-line:interface-name
 interface IMedewerker {
@@ -34,6 +34,7 @@ class Main extends React.Component <IProps, IState> {
     constructor() {
         super();
         this.toggle = this.toggle.bind(this);
+        this.willAddDay = this.willAddDay.bind(this);
         this.state = {
           dropdownOpen: false,
           medewerkers: [],
@@ -41,37 +42,28 @@ class Main extends React.Component <IProps, IState> {
           activeEm: '',
           activeId: 0,
           isSelected: false,
-          uniqueId: 0
+          uniqueId: 0,
+          willAdd: false
         };
       }
 
-    componentDidMount() {
+    componentWillMount() {
         this.fetchData();
     }
     
     render() {  
         let name = this.state.activeEm;
-
         let inDienst = '';
         let uitDienst = '';
         let vakDagen = 0;
         if (this.state.activeId !== 0) {
-        let activeDat: IMedewerker = this.state.medewerkers.filter(item => item.id === this.state.activeId )[0];
-         // tslint:disable-next-line:no-console
-        inDienst = activeDat.inDienstDatum;
-        uitDienst = activeDat.uitDienstDatum;
-        vakDagen = activeDat.vakantieDagen;
+            let activeDat: IMedewerker = this.state.medewerkers.filter(item => item.id === this.state.activeId )[0];
+            inDienst = activeDat.inDienstDatum;
+            uitDienst = activeDat.uitDienstDatum;
+            vakDagen = activeDat.vakantieDagen;
         }
 
-        // Puts all the employees in the list
-        let rows: Array<DropdownItem> = []; 
-        for (let i = 0; i < this.state.medewerkers.length; i++) {
-                let naam = this.state.medewerkers[i].naam;
-                let id = this.state.medewerkers[i].id;
-                // tslint:disable-next-line:jsx-wrap-multiline
-                rows.push(<DropdownItem key={i} onClick={() => this.person(naam, id)}> 
-                  {this.state.medewerkers[i].naam}</DropdownItem>);
-          }
+        let rows = this.makeMenuList();
 
         return ( 
             <div className="main">
@@ -90,6 +82,8 @@ class Main extends React.Component <IProps, IState> {
                 {(this.state.isSelected) ? <AddButton 
                     name={name} 
                     activeId={this.state.activeId}
+                    willAdd={this.state.willAdd}
+                    willAddDay={this.willAddDay}
                 /> : null}
 
                 {(this.state.isSelected) ? <Overview 
@@ -97,6 +91,8 @@ class Main extends React.Component <IProps, IState> {
                     uitDienst={uitDienst} 
                     vakDagen={vakDagen} 
                     activeId={this.state.activeId}
+                    willAdd={this.state.willAdd}
+                    willAddDay={this.willAddDay}
                 /> 
                 : null}
             </div>
@@ -104,6 +100,7 @@ class Main extends React.Component <IProps, IState> {
         );
     }
 
+    // Gets the data from 'medewerker'
     private fetchData() {
         const url = 'http://localhost:9000/api/medewerker';
         fetch(url, {
@@ -118,7 +115,20 @@ class Main extends React.Component <IProps, IState> {
             .catch( error => console.log('Error Fetch : ' + error )); 
     }
 
-    // Toggle for the dropdown
+     // Puts all the employees in the dropdown menu
+     private makeMenuList () {
+        let rows: Array<DropdownItem> = []; 
+        for (let i = 0; i < this.state.medewerkers.length; i++) {
+                let naam = this.state.medewerkers[i].naam;
+                let id = this.state.medewerkers[i].id;
+                // tslint:disable-next-line:jsx-wrap-multiline
+                rows.push(<DropdownItem key={i} onClick={() => this.person(naam, id)}> 
+                  {this.state.medewerkers[i].naam}</DropdownItem>);
+          }
+        return rows;
+    }
+
+    // Toggle for the dropdownmenu
     private toggle() {
         this.setState({
         dropdownOpen: !this.state.dropdownOpen
@@ -131,6 +141,13 @@ class Main extends React.Component <IProps, IState> {
             activeEm: name,
             activeId: id,
             isSelected: true
+        });
+    }
+
+    // Change status when somebody clicks on the 'voeg vakantiedagen toe' button
+    private willAddDay() {
+        this.setState({
+            willAdd : !this.state.willAdd
         });
     }
 }
