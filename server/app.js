@@ -14,11 +14,11 @@ app.get('/', (req, res) => {
   res.sendFile(path.resolve(__dirname, '..', 'build', 'index.html'));
 });
 
-//Using knex to connect to database. 
+//Knex to connect to database. 
 const knex = require('knex')(require('../knexfile'))
 
 app.get('/api/medewerker', function(req, res){
-  
+
   knex.select().from('medewerker')
   .then(function(data) {
     return res.send(data);
@@ -54,15 +54,15 @@ app.post('/api/postday', function(req, res) {
 });
 
 app.delete('/api/delete/:id', function(req, res) {
-     let id = req.params.id;
+  let id = req.params.id;
 
-     knex('vakantiedagen').where('id', id).del()
-     .then(function() {
-      knex.select().from('vakantiedagen')
-      .then(function(data) {
-        return res.send(data)
-     })
-   })
+  knex('vakantiedagen').where('id', id).del()
+  .then(function() {
+    knex.select().from('vakantiedagen')
+    .then(function(data) {
+      return res.send(data)
+    })
+  })
 });
 
 app.put('/api/update/:id', function(req, res){

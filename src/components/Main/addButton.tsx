@@ -1,10 +1,9 @@
 import * as React from 'react';
-
-import './main.css';
-// import AddDay from './addDay';
 import { Button, Row, Col } from 'reactstrap';
 import TiPlus from 'react-icons/lib/ti/plus';
 import TiMinus from 'react-icons/lib/ti/minus';
+
+import './main.css';
 
 interface MyProps {
     name: string;

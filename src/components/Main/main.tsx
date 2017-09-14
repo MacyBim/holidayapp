@@ -1,10 +1,9 @@
 import * as React from 'react';
-import { Dropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap';
-import { Row, Col } from 'reactstrap';
 
 import './main.css';
-import AddButton from './button';
+import AddButton from './addButton';
 import Overview from './overview';
+import DropdownList from './dropdownList';
 
 // tslint:disable-next-line:interface-name
 interface IProps {
@@ -12,7 +11,6 @@ interface IProps {
 
 // tslint:disable-next-line:interface-name
 interface IState {
-    dropdownOpen: boolean;
     activeEm: string;
     activeId: number;
     medewerkers: IMedewerker[];
@@ -22,21 +20,20 @@ interface IState {
     willAdd: boolean;
 }
   // tslint:disable-next-line:interface-name
-interface IMedewerker {
+export interface IMedewerker {
     id: number;
     naam: string;
-    inDienstDatum: string;
-    uitDienstDatum: string;
-    vakantieDagen: number;
+    indienstdatum: string;
+    uitdienstdatum: string;
+    vakantiedagen: number;
 }
 
 class Main extends React.Component <IProps, IState> {
     constructor() {
         super();
-        this.toggle = this.toggle.bind(this);
         this.willAddDay = this.willAddDay.bind(this);
+        this.person = this.person.bind(this);
         this.state = {
-          dropdownOpen: false,
           medewerkers: [],
           names: [],
           activeEm: '',
@@ -58,27 +55,17 @@ class Main extends React.Component <IProps, IState> {
         let vakDagen = 0;
         if (this.state.activeId !== 0) {
             let activeDat: IMedewerker = this.state.medewerkers.filter(item => item.id === this.state.activeId )[0];
-            inDienst = activeDat.inDienstDatum;
-            uitDienst = activeDat.uitDienstDatum;
-            vakDagen = activeDat.vakantieDagen;
+            inDienst = activeDat.indienstdatum;
+            uitDienst = activeDat.uitdienstdatum;
+            vakDagen = activeDat.vakantiedagen;
         }
-
-        let rows = this.makeMenuList();
 
         return ( 
             <div className="main">
-                <Row className="dropdown">
-                    <Col lg="6" sm="6" xs="12">
-                        <Dropdown isOpen={this.state.dropdownOpen} toggle={this.toggle}>
-                            <DropdownToggle caret={true}>
-                            Selecteer medewerker...
-                            </DropdownToggle>
-                            <DropdownMenu className="menu">
-                                {rows}
-                            </DropdownMenu>
-                        </Dropdown>
-                    </Col>
-                </Row> 
+                <DropdownList 
+                    medewerkers={this.state.medewerkers}
+                    person={this.person}
+                />
                 {(this.state.isSelected) ? <AddButton 
                     name={name} 
                     activeId={this.state.activeId}
@@ -113,26 +100,6 @@ class Main extends React.Component <IProps, IState> {
                 });   
             })// tslint:disable-next-line:no-console
             .catch( error => console.log('Error Fetch : ' + error )); 
-    }
-
-     // Puts all the employees in the dropdown menu
-     private makeMenuList () {
-        let rows: Array<DropdownItem> = []; 
-        for (let i = 0; i < this.state.medewerkers.length; i++) {
-                let naam = this.state.medewerkers[i].naam;
-                let id = this.state.medewerkers[i].id;
-                // tslint:disable-next-line:jsx-wrap-multiline
-                rows.push(<DropdownItem key={i} onClick={() => this.person(naam, id)}> 
-                  {this.state.medewerkers[i].naam}</DropdownItem>);
-          }
-        return rows;
-    }
-
-    // Toggle for the dropdownmenu
-    private toggle() {
-        this.setState({
-        dropdownOpen: !this.state.dropdownOpen
-        });
     }
   
     // When an employee is selected 

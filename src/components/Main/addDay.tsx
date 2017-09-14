@@ -3,7 +3,7 @@ import { Form, Label, Input, Col, Row, Button } from 'reactstrap';
 import TiPlus from 'react-icons/lib/ti/plus';
 
 import './main.css';
-import AddButton from './button';
+import AddButton from './addButton';
 
 // tslint:disable-next-line:interface-name
 interface IProps {
@@ -18,6 +18,7 @@ class AddDay extends React.Component<IProps, AddButton> {
       private endDate: HTMLInputElement;
      
       render() {
+          
           return (      
             <Form className="form">
                  <Row className="addRow">
@@ -25,11 +26,17 @@ class AddDay extends React.Component<IProps, AddButton> {
                         <Col sm="3" xs="0" /> 
                         <Col sm="3" xs="6">
                               <Label for="startdate">Startdatum</Label>
-                              <Input type="date" placeholder="" getRef={(input) => (this.beginDate = input)} />    
+                              <Input 
+                                    type="date" 
+                                    getRef={(input) => (this.beginDate = input)} 
+                              />    
                         </Col> 
                         <Col sm="3" xs="6">
                               <Label for="startdate">Startdatum</Label>
-                              <Input type="date" placeholder="" getRef={(input) => (this.endDate = input)}/>    
+                              <Input 
+                                    type="date"
+                                    getRef={(input) => (this.endDate = input)}
+                              />    
                         </Col> 
                         <Col sm="12" className="button">  
                               <Button color="info" onClick={() => this.addDays()}> 
@@ -50,10 +57,10 @@ class AddDay extends React.Component<IProps, AddButton> {
       
             // When the Id already exists a new one will be created
             while (!(typeof(this.props.idList.find(item => item === id )) !== undefined)) {
-                   a = this.props.activeId.toString();
-                   b = Math.floor((Math.random() * 100) + 1).toString();
-                   c = a + b;
-                   id = Number(c);
+                  a = this.props.activeId.toString();
+                  b = Math.floor((Math.random() * 100) + 1).toString();
+                  c = a + b;
+                  id = Number(c);
             }
             this.props.insert(id, this.beginDate.value, this.endDate.value );
       }

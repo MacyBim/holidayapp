@@ -4,15 +4,15 @@ import { Route,  BrowserRouter as Router } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.css';
 import registerServiceWorker from './registerServiceWorker';
 
-import App from './components';
+import App from './components/App';
 
 ReactDOM.render(
   <Router>
-   <div>
+    <div>
         <Route exact={true} path="/" component={App} />
-  </div> 
-
+    </div> 
   </Router>,
   document.getElementById('root') as HTMLElement
 );
+
 registerServiceWorker();
